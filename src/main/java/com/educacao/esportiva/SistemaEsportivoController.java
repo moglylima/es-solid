@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
  * ========================================================================
  * SISTEMA ESPORTIVO CONTROLLER - VERSÃO MONOLÍTICA (NÃO-SOLID)
  * ========================================================================
- * 
+ *
  * ATENÇÃO: Esta implementação INTENCIONALMENTE viola os princípios SOLID!
- * 
+ *
  * PROBLEMAS DESTA IMPLEMENTAÇÃO:
- * 
+ *
  * 1. VIOLAÇÃO DO SINGLE RESPONSIBILITY PRINCIPLE (SRP):
  *    - Uma única classe gerencia TODAS as responsabilidades:
  *      * Controle de requisições HTTP
@@ -24,15 +24,15 @@ import java.util.stream.Collectors;
  *      * Persistência de dados (HashMap)
  *      * Validações
  *      * Filtros e consultas
- * 
+ *
  * 2. VIOLAÇÃO DO OPEN/CLOSED PRINCIPLE (OCP):
  *    - Para adicionar nova funcionalidade, precisa modificar esta classe
  *    - Não é extensível sem modificação
- * 
+ *
  * 3. VIOLAÇÃO DO DEPENDENCY INVERSION PRINCIPLE (DIP):
  *    - Depende diretamente de implementações concretas (HashMap)
  *    - Não usa abstrações/interfaces
- * 
+ *
  * 4. PROBLEMAS ADICIONAIS:
  *    - Código duplicado
  *    - Difícil manutenção
@@ -47,7 +47,7 @@ public class SistemaEsportivoController {
     // ========================================================================
     // ARMAZENAMENTO EM MEMÓRIA - SIMULA BANCO DE DADOS
     // ========================================================================
-    
+
     /**
      * PROBLEMA: Persistência hardcoded na classe de controle
      * Deveria estar em uma camada separada (Repository)
@@ -57,7 +57,7 @@ public class SistemaEsportivoController {
     private final Map<Long, Professor> professores = new HashMap<>();
     private final Map<Long, Categoria> categorias = new HashMap<>();
     private final Map<Long, Aula> aulas = new HashMap<>();
-    
+
     // Contadores para IDs automáticos - PROBLEMA: Lógica de ID na camada de controle
     private Long esporteIdCounter = 1L;
     private Long conteudoIdCounter = 1L;
@@ -79,7 +79,7 @@ public class SistemaEsportivoController {
 
     /**
      * POST /api/esportes - Cadastra um novo esporte
-     * 
+     *
      * PROBLEMAS DESTA IMPLEMENTAÇÃO:
      * - Validação manual inline
      * - Lógica de negócio misturada com controle HTTP
@@ -93,7 +93,7 @@ public class SistemaEsportivoController {
                 return ResponseEntity.badRequest()
                     .body("Erro: Nome do esporte é obrigatório");
             }
-            
+
             if (esporte.getCategoria() == null || esporte.getCategoria().trim().isEmpty()) {
                 return ResponseEntity.badRequest()
                     .body("Erro: Categoria do esporte é obrigatória");
@@ -110,12 +110,12 @@ public class SistemaEsportivoController {
 
             // PROBLEMA: Geração de ID no controller
             esporte.setId(esporteIdCounter++);
-            
+
             // PROBLEMA: Persistência direta sem abstração
             esportes.put(esporte.getId(), esporte);
-            
+
             return ResponseEntity.status(HttpStatus.CREATED).body(esporte);
-            
+
         } catch (Exception e) {
             // PROBLEMA: Tratamento de erro genérico
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -137,7 +137,7 @@ public class SistemaEsportivoController {
 
     /**
      * POST /api/conteudos - Adiciona conteúdo vinculado a um esporte
-     * 
+     *
      * PROBLEMAS: Mesmas violações do método criarEsporte
      */
     @PostMapping("/conteudos")
@@ -148,12 +148,12 @@ public class SistemaEsportivoController {
                 return ResponseEntity.badRequest()
                     .body("Erro: Título do conteúdo é obrigatório");
             }
-            
+
             if (conteudo.getUrl() == null || conteudo.getUrl().trim().isEmpty()) {
                 return ResponseEntity.badRequest()
                     .body("Erro: URL do conteúdo é obrigatória");
             }
-            
+
             if (conteudo.getNivel() == null || conteudo.getNivel().trim().isEmpty()) {
                 return ResponseEntity.badRequest()
                     .body("Erro: Nível do conteúdo é obrigatório");
@@ -173,9 +173,9 @@ public class SistemaEsportivoController {
 
             conteudo.setId(conteudoIdCounter++);
             conteudos.put(conteudo.getId(), conteudo);
-            
+
             return ResponseEntity.status(HttpStatus.CREATED).body(conteudo);
-            
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Erro interno: " + e.getMessage());
@@ -184,7 +184,7 @@ public class SistemaEsportivoController {
 
     /**
      * GET /api/conteudos/esporte/{esporteId} - Lista conteúdos de um esporte
-     * 
+     *
      * PROBLEMA: Lógica de filtro no controller
      */
     @GetMapping("/conteudos/esporte/{esporteId}")
@@ -199,9 +199,9 @@ public class SistemaEsportivoController {
             List<Conteudo> conteudosDoEsporte = conteudos.values().stream()
                 .filter(conteudo -> conteudo.getEsporteId().equals(esporteId))
                 .collect(Collectors.toList());
-            
+
             return ResponseEntity.ok(conteudosDoEsporte);
-            
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Erro interno: " + e.getMessage());
@@ -223,7 +223,7 @@ public class SistemaEsportivoController {
                 return ResponseEntity.badRequest()
                     .body("Erro: Nome do professor é obrigatório");
             }
-            
+
             if (professor.getEspecializacao() == null || professor.getEspecializacao().trim().isEmpty()) {
                 return ResponseEntity.badRequest()
                     .body("Erro: Especialização do professor é obrigatória");
@@ -231,9 +231,9 @@ public class SistemaEsportivoController {
 
             professor.setId(professorIdCounter++);
             professores.put(professor.getId(), professor);
-            
+
             return ResponseEntity.status(HttpStatus.CREATED).body(professor);
-            
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Erro interno: " + e.getMessage());
@@ -242,17 +242,13 @@ public class SistemaEsportivoController {
 
     /**
      * GET /api/professores/especializacao/{especializacao} - Lista professores por especialização
-     * 
+     *
      * PROBLEMA: Lógica de filtro no controller
      */
-    @GetMapping("/professores/especializacao/{especializacao}")
-    public ResponseEntity<List<Professor>> listarProfessoresPorEspecializacao(@PathVariable String especializacao) {
+    @GetMapping("/professores")
+    public ResponseEntity<List<Professor>> listarProfessoresPorEspecializacao() {
         // PROBLEMA: Lógica de filtro implementada diretamente no controller
-        List<Professor> professoresFiltrados = professores.values().stream()
-            .filter(professor -> professor.getEspecializacao().equalsIgnoreCase(especializacao))
-            .collect(Collectors.toList());
-        
-        return ResponseEntity.ok(professoresFiltrados);
+        return ResponseEntity.ok(new ArrayList<>(professores.values()));
     }
 
     // ========================================================================
@@ -261,7 +257,7 @@ public class SistemaEsportivoController {
 
     /**
      * POST /api/aulas - Cria uma aula com lista de conteúdos e professor
-     * 
+     *
      * PROBLEMA: Lógica de negócio complexa no controller
      */
     @PostMapping("/aulas")
@@ -272,12 +268,12 @@ public class SistemaEsportivoController {
                 return ResponseEntity.badRequest()
                     .body("Erro: Data da aula é obrigatória");
             }
-            
+
             if (aula.getDuracao() == null || aula.getDuracao() <= 0) {
                 return ResponseEntity.badRequest()
                     .body("Erro: Duração deve ser maior que zero");
             }
-            
+
             if (aula.getProfessorId() == null || !professores.containsKey(aula.getProfessorId())) {
                 return ResponseEntity.badRequest()
                     .body("Erro: Professor não encontrado");
@@ -299,9 +295,9 @@ public class SistemaEsportivoController {
 
             aula.setId(aulaIdCounter++);
             aulas.put(aula.getId(), aula);
-            
+
             return ResponseEntity.status(HttpStatus.CREATED).body(aula);
-            
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Erro interno: " + e.getMessage());
@@ -310,7 +306,7 @@ public class SistemaEsportivoController {
 
     /**
      * GET /api/aulas/filtrar?categoria={categoria} - Filtra aulas por categoria do esporte
-     * 
+     *
      * PROBLEMA: Lógica de filtro complexa no controller
      */
     @GetMapping("/aulas/filtrar")
@@ -321,12 +317,12 @@ public class SistemaEsportivoController {
         // 2. Para cada aula, buscar seus conteúdos
         // 3. Para cada conteúdo, buscar o esporte
         // 4. Verificar se a categoria do esporte corresponde ao filtro
-        
+
         List<Aula> aulasMatched = new ArrayList<>();
-        
+
         for (Aula aula : aulas.values()) {
             boolean aulaCorrespondeCategoria = false;
-            
+
             // Para cada conteúdo da aula
             for (Long conteudoId : aula.getConteudos()) {
                 Conteudo conteudo = conteudos.get(conteudoId);
@@ -338,12 +334,12 @@ public class SistemaEsportivoController {
                     }
                 }
             }
-            
+
             if (aulaCorrespondeCategoria) {
                 aulasMatched.add(aula);
             }
         }
-        
+
         return ResponseEntity.ok(aulasMatched);
     }
 
@@ -360,41 +356,41 @@ public class SistemaEsportivoController {
         Esporte volei = new Esporte(esporteIdCounter++, "Vôlei", "Coletivo");
         Esporte basquete = new Esporte(esporteIdCounter++, "Basquete", "Coletivo");
         Esporte natacao = new Esporte(esporteIdCounter++, "Natação", "Individual");
-        
+
         esportes.put(volei.getId(), volei);
         esportes.put(basquete.getId(), basquete);
         esportes.put(natacao.getId(), natacao);
-        
+
         // Criando professores de exemplo
         Professor prof1 = new Professor(professorIdCounter++, "João Silva", "Esportes Coletivos");
         Professor prof2 = new Professor(professorIdCounter++, "Maria Santos", "Esportes Aquáticos");
-        
+
         professores.put(prof1.getId(), prof1);
         professores.put(prof2.getId(), prof2);
-        
+
         // Criando conteúdos de exemplo
-        Conteudo conteudo1 = new Conteudo(conteudoIdCounter++, 
-            "Fundamentos do Vôlei", 
-            "https://example.com/volei-fundamentos.mp4", 
-            "Fundamental II", 
+        Conteudo conteudo1 = new Conteudo(conteudoIdCounter++,
+            "Fundamentos do Vôlei",
+            "https://example.com/volei-fundamentos.mp4",
+            "Fundamental II",
             volei.getId());
-        
-        Conteudo conteudo2 = new Conteudo(conteudoIdCounter++, 
-            "Técnicas de Saque no Vôlei", 
-            "https://example.com/volei-saque.pdf", 
-            "Médio", 
+
+        Conteudo conteudo2 = new Conteudo(conteudoIdCounter++,
+            "Técnicas de Saque no Vôlei",
+            "https://example.com/volei-saque.pdf",
+            "Médio",
             volei.getId());
-            
+
         conteudos.put(conteudo1.getId(), conteudo1);
         conteudos.put(conteudo2.getId(), conteudo2);
-        
+
         // Criando aula de exemplo
-        Aula aula1 = new Aula(aulaIdCounter++, 
-            LocalDate.now().plusDays(1), 
-            90, 
-            Arrays.asList(conteudo1.getId(), conteudo2.getId()), 
+        Aula aula1 = new Aula(aulaIdCounter++,
+            LocalDate.now().plusDays(1),
+            90,
+            Arrays.asList(conteudo1.getId(), conteudo2.getId()),
             prof1.getId());
-            
+
         aulas.put(aula1.getId(), aula1);
     }
 
@@ -413,7 +409,7 @@ public class SistemaEsportivoController {
         status.put("totalProfessores", professores.size());
         status.put("totalAulas", aulas.size());
         status.put("ultimoEsporteId", esporteIdCounter - 1);
-        
+
         return ResponseEntity.ok(status);
     }
 }
