@@ -1,0 +1,6 @@
+com/educacao/esportiva/domain/repository/EsporteRepository.class
+com/educacao/esportiva/domain/Professor.class
+com/educacao/esportiva/domain/repository/ProfessorRepository.class
+com/educacao/esportiva/domain/Aula.class
+com/educacao/esportiva/domain/Conteudo.class
+com/educacao/esportiva/domain/Esporte.class
