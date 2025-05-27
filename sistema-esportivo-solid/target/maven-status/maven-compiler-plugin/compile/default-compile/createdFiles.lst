@@ -5,4 +5,5 @@ com/educacao/esportiva/presentation/controller/EsporteController.class
 com/educacao/esportiva/SistemaEsportivoSolidApplication.class
 com/educacao/esportiva/application/service/EsporteService.class
 com/educacao/esportiva/presentation/controller/EsporteController$EsporteRequest.class
+com/educacao/esportiva/infrastructure/config/DataInitializer.class
 com/educacao/esportiva/domain/Esporte.class

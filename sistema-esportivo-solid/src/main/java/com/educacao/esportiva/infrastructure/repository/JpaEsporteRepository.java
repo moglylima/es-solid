@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementação JPA do repositório de Esporte.
+ * Implementação JPA simples do repositório de Esporte.
  */
 @Repository
 public interface JpaEsporteRepository extends JpaRepository<Esporte, Long>, EsporteRepository {
