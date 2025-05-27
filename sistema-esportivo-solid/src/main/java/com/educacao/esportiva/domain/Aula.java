@@ -2,6 +2,7 @@ package com.educacao.esportiva.domain;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
@@ -57,6 +58,18 @@ public class Aula {
     
     @Column(name = "professor_id", nullable = false)
     private Long professorId;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "professor_id", insertable = false, updatable = false)
+    private Professor professor;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "esporte_id", insertable = false, updatable = false)
+    private Esporte esporte;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "conteudo_id")
+    private Conteudo conteudo;
 
     // Construtores
     protected Aula() {
@@ -79,6 +92,22 @@ public class Aula {
         this.setLocal(local);
         this.setEsporteId(esporteId);
         this.setProfessorId(professorId);
+    }
+    
+    /**
+     * Construtor alternativo para criação com objetos relacionados
+     */
+    public Aula(LocalDateTime dataHora, Professor professor, Conteudo conteudo) {
+        // Extrair data e hora
+        this.setDataAula(dataHora.toLocalDate());
+        this.setHorarioInicio(dataHora.toLocalTime());
+        this.setProfessor(professor);
+        this.setConteudo(conteudo);
+        this.setProfessorId(professor.getId());
+        this.setEsporteId(conteudo.getEsporteId());
+        this.setTitulo("Aula de " + conteudo.getTitulo());
+        this.setLocal("Local padrão");
+        this.setDuracaoMinutos(conteudo.getDuracao() != null ? conteudo.getDuracao() : 60);
     }
 
     // Getters e Setters com validação de domínio
@@ -205,6 +234,30 @@ public class Aula {
         this.professorId = professorId;
     }
 
+    public Professor getProfessor() {
+        return professor;
+    }
+
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
+    }
+
+    public Esporte getEsporte() {
+        return esporte;
+    }
+
+    public void setEsporte(Esporte esporte) {
+        this.esporte = esporte;
+    }
+
+    public Conteudo getConteudo() {
+        return conteudo;
+    }
+
+    public void setConteudo(Conteudo conteudo) {
+        this.conteudo = conteudo;
+    }
+
     /**
      * MÉTODO DE DOMÍNIO - APLICAÇÃO DO SRP
      * 
@@ -270,6 +323,13 @@ public class Aula {
                            horarioInicio, 
                            duracaoMinutos, 
                            local);
+    }
+
+    /**
+     * MÉTODO DE DOMÍNIO: Obter data e hora como LocalDateTime
+     */
+    public LocalDateTime getDataHora() {
+        return LocalDateTime.of(dataAula, horarioInicio);
     }
 
     @Override

@@ -77,6 +77,13 @@ public interface EsporteRepository {
     boolean existsByNomeIgnoreCase(String nome);
     
     /**
+     * Contar todos os esportes
+     * 
+     * @return número total de esportes
+     */
+    long count();
+    
+    /**
      * Contar esportes por categoria
      * 
      * @param categoria categoria para contar

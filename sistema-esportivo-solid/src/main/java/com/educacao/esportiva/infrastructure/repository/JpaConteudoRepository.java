@@ -25,7 +25,7 @@ public interface JpaConteudoRepository extends JpaRepository<Conteudo, Long>, Co
     @Query("SELECT c FROM Conteudo c WHERE c.nivel = :nivel")
     List<Conteudo> buscarPorNivel(@Param("nivel") String nivel);
     
-    @Query("SELECT c FROM Conteudo c WHERE c.duracao >= :duracaoMinima AND c.duracao <= :duracaoMaxima")
+    @Query("SELECT c FROM Conteudo c WHERE c.duracaoMinutos >= :duracaoMinima AND c.duracaoMinutos <= :duracaoMaxima")
     List<Conteudo> buscarPorFaixaDuracao(@Param("duracaoMinima") int duracaoMinima, 
                                         @Param("duracaoMaxima") int duracaoMaxima);
 }

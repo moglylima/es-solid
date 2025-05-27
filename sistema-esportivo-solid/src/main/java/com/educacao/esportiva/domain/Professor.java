@@ -35,6 +35,12 @@ public class Professor {
     
     @Column(name = "especializacao", nullable = false, length = 100)
     private String especializacao;
+    
+    @Column(name = "email", nullable = false, unique = true, length = 200)
+    private String email;
+    
+    @Column(name = "ativo", nullable = false)
+    private Boolean ativo = true;
 
     // Construtores
     protected Professor() {
@@ -44,9 +50,10 @@ public class Professor {
     /**
      * Construtor de domínio - valida regras de negócio
      */
-    public Professor(String nome, String especializacao) {
+    public Professor(String nome, String especializacao, String email) {
         this.setNome(nome);
         this.setEspecializacao(especializacao);
+        this.setEmail(email);
     }
 
     // Getters e Setters com validação de domínio
@@ -87,6 +94,45 @@ public class Professor {
             throw new IllegalArgumentException("Especialização deve ter entre 5 e 100 caracteres");
         }
         this.especializacao = especializacao.trim();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * SOLUÇÃO: Validação de e-mail com regras de domínio
+     */
+    public void setEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("E-mail do professor não pode ser nulo ou vazio");
+        }
+        if (!email.contains("@") || !email.contains(".")) {
+            throw new IllegalArgumentException("E-mail do professor deve ser válido");
+        }
+        this.email = email.trim();
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    /**
+     * MÉTODO DE DOMÍNIO: Verificar se professor está ativo
+     */
+    public boolean isAtivo() {
+        return this.ativo != null && this.ativo;
+    }
+
+    /**
+     * MÉTODO DE DOMÍNIO: Desativar professor
+     */
+    public void desativar() {
+        this.ativo = false;
     }
 
     /**
@@ -141,6 +187,8 @@ public class Professor {
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", especializacao='" + especializacao + '\'' +
+                ", email='" + email + '\'' +
+                ", ativo=" + ativo +
                 '}';
     }
 }

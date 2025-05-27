@@ -38,6 +38,9 @@ public class Esporte {
     
     @Column(name = "categoria", nullable = false, length = 50)
     private String categoria;
+    
+    @Column(name = "ativo", nullable = false)
+    private Boolean ativo = true;
 
     // Construtores
     protected Esporte() {
@@ -97,6 +100,35 @@ public class Esporte {
             throw new IllegalArgumentException("Categoria do esporte deve ter entre 2 e 50 caracteres");
         }
         this.categoria = categoria.trim();
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo != null ? ativo : true;
+    }
+
+    /**
+     * MÉTODO DE DOMÍNIO: Verificar se esporte está ativo
+     */
+    public boolean isAtivo() {
+        return this.ativo != null && this.ativo;
+    }
+
+    /**
+     * MÉTODO DE DOMÍNIO: Ativar esporte
+     */
+    public void ativar() {
+        this.ativo = true;
+    }
+
+    /**
+     * MÉTODO DE DOMÍNIO: Desativar esporte
+     */
+    public void desativar() {
+        this.ativo = false;
     }
 
     /**

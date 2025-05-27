@@ -94,4 +94,66 @@ public interface ProfessorRepository {
      * @return true se existe
      */
     boolean existsById(Long id);
+    
+    /**
+     * Buscar professor por email
+     * 
+     * @param email email do professor
+     * @return Optional contendo o professor se encontrado
+     */
+    Optional<Professor> findByEmailIgnoreCase(String email);
+    
+    /**
+     * Buscar professor por email (alias)
+     * 
+     * @param email email do professor
+     * @return Optional contendo o professor se encontrado
+     */
+    default Optional<Professor> buscarPorEmail(String email) {
+        return findByEmailIgnoreCase(email);
+    }
+    
+    /**
+     * Buscar professores ativos
+     * 
+     * @return lista de professores ativos
+     */
+    List<Professor> findByAtivoTrue();
+    
+    /**
+     * Buscar professores ativos (alias)
+     * 
+     * @return lista de professores ativos
+     */
+    default List<Professor> buscarAtivos() {
+        return findByAtivoTrue();
+    }
+    
+    /**
+     * Buscar professores por nome contendo
+     * 
+     * @param nome nome para buscar
+     * @return lista de professores com o nome
+     */
+    List<Professor> findByNomeContainingIgnoreCase(String nome);
+    
+    /**
+     * Buscar professores por nome contendo (alias)
+     * 
+     * @param nome nome para buscar
+     * @return lista de professores com o nome
+     */
+    default List<Professor> buscarPorNomeContendo(String nome) {
+        return findByNomeContainingIgnoreCase(nome);
+    }
+    
+    /**
+     * Buscar professores por especialização (alias)
+     * 
+     * @param especializacao especialização para buscar
+     * @return lista de professores com a especialização
+     */
+    default List<Professor> buscarPorEspecializacao(String especializacao) {
+        return findByEspecializacaoContainingIgnoreCase(especializacao);
+    }
 }

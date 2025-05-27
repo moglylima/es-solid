@@ -39,8 +39,18 @@ public class Conteudo {
     @Column(name = "nivel", nullable = false, length = 50)
     private String nivel;
     
+    @Column(name = "descricao", length = 1000)
+    private String descricao;
+    
+    @Column(name = "duracao_minutos")
+    private Integer duracaoMinutos;
+    
     @Column(name = "esporte_id", nullable = false)
     private Long esporteId;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "esporte_id", insertable = false, updatable = false)
+    private Esporte esporte;
 
     // Construtores
     protected Conteudo() {
@@ -49,6 +59,19 @@ public class Conteudo {
 
     /**
      * Construtor de domínio - valida regras de negócio
+     */
+    public Conteudo(String titulo, String descricao, String tipo, Integer duracaoMinutos, Esporte esporte) {
+        this.setTitulo(titulo);
+        this.setDescricao(descricao);
+        this.setUrl(tipo); // usando url como tipo temporariamente
+        this.setDuracaoMinutos(duracaoMinutos);
+        this.setEsporte(esporte);
+        this.setEsporteId(esporte.getId());
+        this.setNivel("Fundamental II"); // valor padrão
+    }
+    
+    /**
+     * Construtor alternativo
      */
     public Conteudo(String titulo, String url, String nivel, Long esporteId) {
         this.setTitulo(titulo);
@@ -126,6 +149,37 @@ public class Conteudo {
             throw new IllegalArgumentException("ID do esporte não pode ser nulo");
         }
         this.esporteId = esporteId;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public Integer getDuracaoMinutos() {
+        return duracaoMinutos;
+    }
+    
+    public Integer getDuracao() {
+        return duracaoMinutos;
+    }
+
+    public void setDuracaoMinutos(Integer duracaoMinutos) {
+        if (duracaoMinutos != null && duracaoMinutos <= 0) {
+            throw new IllegalArgumentException("Duração deve ser maior que zero");
+        }
+        this.duracaoMinutos = duracaoMinutos;
+    }
+
+    public Esporte getEsporte() {
+        return esporte;
+    }
+
+    public void setEsporte(Esporte esporte) {
+        this.esporte = esporte;
     }
 
     /**
